@@ -12,6 +12,9 @@ import java.util.regex.Pattern;
 public abstract class Document {
 
 	private String text;
+	private static double C1 = 206.835;
+	private static double C2 = 1.015;
+	private static double C3 = 84.6;
 	
 	/** Create a new document from the given text.
 	 * Because this class is abstract, this is used only from subclasses.
@@ -67,7 +70,74 @@ public abstract class Document {
 		// TODO: Implement this method so that you can call it from the 
 	    // getNumSyllables method in BasicDocument (module 2) and 
 	    // EfficientDocument (module 3).
-	    return 0;
+		if (word == null || word.isEmpty()) {
+			return 0;
+		}
+		
+		int syllCount = 0;
+		String w = word.toLowerCase();
+		boolean isPrevSyllable = false;
+		for (int i = 0; i < w.length(); i++) {
+			char c = w.charAt(i);
+			
+			if (isSyllable(c)) {
+				// Skip count if the previous char is a syllable.
+				if (isPrevSyllable) {
+					continue;
+				}
+				
+				// Last char is 'e'?
+				if (i == w.length() - 1 && syllCount > 0 && c == 'e') {
+					continue;
+				}
+				syllCount++;
+				isPrevSyllable = true;
+			}
+			else {
+				isPrevSyllable = false;
+			}
+		}
+	    return syllCount;
+	}
+	
+	// This is a helper function that returns the number of syllables
+	// in a word.  You should write this and use it in your 
+	// BasicDocument class.
+	private static int countSyllablesFromCoursera(String word)
+	{
+	    //System.out.print("Counting syllables in " + word + "...");
+		int numSyllables = 0;
+		boolean newSyllable = true;
+		String vowels = "aeiouy";
+		char[] cArray = word.toCharArray();
+		for (int i = 0; i < cArray.length; i++)
+		{
+		    if (i == cArray.length-1 && Character.toLowerCase(cArray[i]) == 'e' 
+		    		&& newSyllable && numSyllables > 0) {
+                numSyllables--;
+            }
+		    if (newSyllable && vowels.indexOf(Character.toLowerCase(cArray[i])) >= 0) {
+				newSyllable = false;
+				numSyllables++;
+			}
+			else if (vowels.indexOf(Character.toLowerCase(cArray[i])) < 0) {
+				newSyllable = true;
+			}
+		}
+		//System.out.println( "found " + numSyllables);
+		return numSyllables;
+	}
+	
+	/**
+	 * Returns {@code true} if character {@code c} is a syllable.
+	 * @param c - The character to check.
+	 * @return {@code true} if the character is a syllable otherwise returns {@code false}.
+	 */
+	private static boolean isSyllable(char c) {
+		if (c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u' || c == 'y') {
+			return true;
+		}
+		return false;
 	}
 	
 	/** A method for testing
@@ -130,9 +200,10 @@ public abstract class Document {
 	/** return the Flesch readability score of this document */
 	public double getFleschScore()
 	{
-	    // TODO: You will play with this method in week 1, and 
-		// then implement it in week 2
-	    return 0.0;
+		double numWords = (double) getNumWords();
+		double numSyll = (double) getNumSyllables();
+		double fleschScore = C1 - (C2 * ((numWords) / getNumSentences())) - (C3 * (numSyll / numWords));
+	    return fleschScore;
 	}
 	
 	
