@@ -16,7 +16,11 @@ public class MyLinkedList<E> extends AbstractList<E> {
 
 	/** Create a new empty LinkedList */
 	public MyLinkedList() {
-		// TODO: Implement this method
+		size = 0;
+		this.head = new LLNode<E>(null);
+		this.tail = new LLNode<E>(null);
+		this.head.next = tail;
+		this.tail.prev = head;
 	}
 
 	/**
@@ -25,15 +29,29 @@ public class MyLinkedList<E> extends AbstractList<E> {
 	 */
 	public boolean add(E element ) 
 	{
-		// TODO: Implement this method
-		return false;
+		if (element == null) {
+			throw new NullPointerException("Unable to insert a null element.");
+		}
+		this.tail = new LLNode<E>(element, tail);
+		size++;
+		return true;
 	}
 
 	/** Get the element at position index 
 	 * @throws IndexOutOfBoundsException if the index is out of bounds. */
 	public E get(int index) 
-	{
-		// TODO: Implement this method.
+	{	
+		if (index < 0 || index >= size) {
+			throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
+		}
+		LLNode<E> curr = head.next;
+		for (int i = 0; i < size; i++) {
+			if (index == i) {
+				return curr.data;
+			}
+			curr = curr.next;
+		}
+		
 		return null;
 	}
 
@@ -44,15 +62,36 @@ public class MyLinkedList<E> extends AbstractList<E> {
 	 */
 	public void add(int index, E element ) 
 	{
-		// TODO: Implement this method
+		if (element == null) {
+			throw new NullPointerException("Unable to insert a null element.");
+		}
+		
+		if (index < 0 || index > size) {
+			throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
+		}
+		
+		LLNode<E> curr = head.next;
+		for (int i = 0; i <= size; i++) {
+			if (index == i) {
+				LLNode<E> newN = new LLNode<>(element);
+				LLNode<E> prev = curr.prev;
+				prev.next = newN;
+				newN.next = curr;
+				newN.prev = prev;
+				curr.prev = newN;
+				size++;
+				break;
+			}
+			curr = curr.next;
+		}
+		
 	}
 
 
 	/** Return the size of the list */
 	public int size() 
-	{
-		// TODO: Implement this method
-		return -1;
+	{	
+		return size;
 	}
 
 	/** Remove a node at the specified index and return its data element.
@@ -63,7 +102,23 @@ public class MyLinkedList<E> extends AbstractList<E> {
 	 */
 	public E remove(int index) 
 	{
-		// TODO: Implement this method
+		if (index < 0 || index > size) {
+			throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
+		}
+		
+		LLNode<E> curr = head.next;
+		for (int i = 0; i <= size; i++) {
+			if (index == i) {
+				LLNode<E> prev = curr.prev;
+				LLNode<E> next = curr.next;
+				LLNode<E> result = curr;
+				prev.next = next;
+				next.prev = prev;
+				size--;
+				return result.data;
+			}
+			curr = curr.next;
+		}
 		return null;
 	}
 
@@ -76,13 +131,30 @@ public class MyLinkedList<E> extends AbstractList<E> {
 	 */
 	public E set(int index, E element) 
 	{
-		// TODO: Implement this method
+		if (element == null) {
+			throw new NullPointerException("Unable to insert a null element.");
+		}
+		
+		if (index < 0 || index > size) {
+			throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
+		}
+		
+		LLNode<E> curr = head.next;
+		for (int i = 0; i <= size; i++) {
+			if (index == i) {
+				E old = curr.data;
+				curr.data = element;
+				return old;
+			}
+			curr = curr.next;
+		}
 		return null;
 	}   
 }
 
 class LLNode<E> 
 {
+	//-- properties --//
 	LLNode<E> prev;
 	LLNode<E> next;
 	E data;
@@ -90,10 +162,30 @@ class LLNode<E>
 	// TODO: Add any other methods you think are useful here
 	// E.g. you might want to add another constructor
 
+	//-- constructors --//
+	/**
+	 * Creates a new LLNode with {@code null} prev and next values.
+	 * @param e - {@link E} the node data.
+	 */
 	public LLNode(E e) 
 	{
 		this.data = e;
 		this.prev = null;
+		this.next = null;
+	}
+	
+	/**
+	 * Creates a new LLNode as the new tail element.
+	 * Links old tail node to this and sets the data for
+	 * the old tail node.
+	 * @param e - {@link E} the node data.
+	 */
+	public LLNode(E e, LLNode<E> tail) 
+	{	
+		tail.data = e;
+		this.data = null;
+		this.prev = tail;
+		tail.next = this;
 		this.next = null;
 	}
 

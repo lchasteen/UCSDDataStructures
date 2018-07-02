@@ -57,8 +57,12 @@ public class DocumentBenchmarking {
 			 *     b. Calls fleshScore on this document
 			 * 6. Print out the time it took to complete the loop in step 5 
 			 *      (on the same line as the first print statement) followed by a newline (\n) 
-			 */  
-			 
+			 */ 
+			
+			System.out.println(String.valueOf(numToCheck) + "\t");
+			String s = getStringFromFile(textfile, numToCheck);
+			System.out.println(s);
+			
 		}
 	
 	}
