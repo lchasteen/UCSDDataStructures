@@ -157,8 +157,6 @@ public class MyLinkedListTester {
 		}
 		catch (NullPointerException e) {
 		}
-		
-		
 	}
 
 	
@@ -206,6 +204,13 @@ public class MyLinkedListTester {
 		catch (IndexOutOfBoundsException e) {
 		}
 		
+		try {
+			addElementAtList.set(1, null);
+			fail("Check for NPE");
+		}
+		catch (NullPointerException e) {
+		}
+		
 	}
 	
 	/** Test setting an element in the list */
@@ -235,6 +240,13 @@ public class MyLinkedListTester {
 			fail("Check out of bounds");
 		}
 		catch (IndexOutOfBoundsException e) {
+		}
+		
+		try {
+			setElementAtList.set(1, null);
+			fail("Check for NPE");
+		}
+		catch (NullPointerException e) {
 		}
 		
 	}
